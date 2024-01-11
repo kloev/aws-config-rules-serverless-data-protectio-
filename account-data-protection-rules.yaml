@@ -1,0 +1,408 @@
+##################################################################################
+#                                                                                 
+#   Config Rulesd Pack:                                                             
+#     Best Practices for Serverless Data Protection                         
+#                                                                               
+#   This pack helps verify compliance for serverless services and data protection.   
+#   Included servcices: Lambda, API Gateway, DyanmoDb, S3
+#   
+#   Additional other config rules can be found at: https://docs.aws.amazon.com/config/latest/developerguide/managed-rules-by-aws-config.html                                                                                 
+#                                                                                 
+##################################################################################
+
+Parameters:
+  AccessKeysRotatedParamMaxAccessKeyAge:
+    Default: '90'
+    Type: String
+  BackupPlanMinFrequencyAndMinRetentionCheckParamRequiredFrequencyUnit:
+    Default: days
+    Type: String
+  BackupPlanMinFrequencyAndMinRetentionCheckParamRequiredFrequencyValue:
+    Default: '1'
+    Type: String
+  BackupPlanMinFrequencyAndMinRetentionCheckParamRequiredRetentionDays:
+    Default: '35'
+    Type: String
+  BackupRecoveryPointMinimumRetentionCheckParamRequiredRetentionDays:
+    Default: '35'
+    Type: String
+  IamPasswordPolicyParamMaxPasswordAge:
+    Default: '90'
+    Type: String
+  IamPasswordPolicyParamMinimumPasswordLength:
+    Default: '14'
+    Type: String
+  IamPasswordPolicyParamPasswordReusePrevention:
+    Default: '24'
+    Type: String
+  IamPasswordPolicyParamRequireLowercaseCharacters:
+    Default: 'true'
+    Type: String
+  IamPasswordPolicyParamRequireNumbers:
+    Default: 'true'
+    Type: String
+  IamPasswordPolicyParamRequireSymbols:
+    Default: 'true'
+    Type: String
+  IamPasswordPolicyParamRequireUppercaseCharacters:
+    Default: 'true'
+    Type: String
+  IamUserUnusedCredentialsCheckParamMaxCredentialUsageAge:
+    Default: '90'
+    Type: String
+Resources:
+  AccessKeysRotated:
+    Properties:
+      ConfigRuleName: access-keys-rotated
+      InputParameters:
+        maxAccessKeyAge:
+          Fn::If:
+          - accessKeysRotatedParamMaxAccessKeyAge
+          - Ref: AccessKeysRotatedParamMaxAccessKeyAge
+          - Ref: AWS::NoValue
+      Source:
+        Owner: AWS
+        SourceIdentifier: ACCESS_KEYS_ROTATED
+    Type: AWS::Config::ConfigRule
+  BackupPlanMinFrequencyAndMinRetentionCheck:
+    Properties:
+      ConfigRuleName: backup-plan-min-frequency-and-min-retention-check
+      InputParameters:
+        requiredFrequencyUnit:
+          Fn::If:
+          - backupPlanMinFrequencyAndMinRetentionCheckParamRequiredFrequencyUnit
+          - Ref: BackupPlanMinFrequencyAndMinRetentionCheckParamRequiredFrequencyUnit
+          - Ref: AWS::NoValue
+        requiredFrequencyValue:
+          Fn::If:
+          - backupPlanMinFrequencyAndMinRetentionCheckParamRequiredFrequencyValue
+          - Ref: BackupPlanMinFrequencyAndMinRetentionCheckParamRequiredFrequencyValue
+          - Ref: AWS::NoValue
+        requiredRetentionDays:
+          Fn::If:
+          - backupPlanMinFrequencyAndMinRetentionCheckParamRequiredRetentionDays
+          - Ref: BackupPlanMinFrequencyAndMinRetentionCheckParamRequiredRetentionDays
+          - Ref: AWS::NoValue
+      Scope:
+        ComplianceResourceTypes:
+        - AWS::Backup::BackupPlan
+      Source:
+        Owner: AWS
+        SourceIdentifier: BACKUP_PLAN_MIN_FREQUENCY_AND_MIN_RETENTION_CHECK
+    Type: AWS::Config::ConfigRule
+  BackupRecoveryPointManualDeletionDisabled:
+    Properties:
+      ConfigRuleName: backup-recovery-point-manual-deletion-disabled
+      Scope:
+        ComplianceResourceTypes:
+        - AWS::Backup::BackupVault
+      Source:
+        Owner: AWS
+        SourceIdentifier: BACKUP_RECOVERY_POINT_MANUAL_DELETION_DISABLED
+    Type: AWS::Config::ConfigRule
+  BackupRecoveryPointMinimumRetentionCheck:
+    Properties:
+      ConfigRuleName: backup-recovery-point-minimum-retention-check
+      InputParameters:
+        requiredRetentionDays:
+          Fn::If:
+          - backupRecoveryPointMinimumRetentionCheckParamRequiredRetentionDays
+          - Ref: BackupRecoveryPointMinimumRetentionCheckParamRequiredRetentionDays
+          - Ref: AWS::NoValue
+      Scope:
+        ComplianceResourceTypes:
+        - AWS::Backup::RecoveryPoint
+      Source:
+        Owner: AWS
+        SourceIdentifier: BACKUP_RECOVERY_POINT_MINIMUM_RETENTION_CHECK
+    Type: AWS::Config::ConfigRule
+  CloudTrailCloudWatchLogsEnabled:
+    Properties:
+      ConfigRuleName: cloud-trail-cloud-watch-logs-enabled
+      Source:
+        Owner: AWS
+        SourceIdentifier: CLOUD_TRAIL_CLOUD_WATCH_LOGS_ENABLED
+    Type: AWS::Config::ConfigRule
+  CloudTrailEnabled:
+    Properties:
+      ConfigRuleName: cloudtrail-enabled
+      Source:
+        Owner: AWS
+        SourceIdentifier: CLOUD_TRAIL_ENABLED
+    Type: AWS::Config::ConfigRule
+  CloudTrailEncryptionEnabled:
+    Properties:
+      ConfigRuleName: cloud-trail-encryption-enabled
+      Source:
+        Owner: AWS
+        SourceIdentifier: CLOUD_TRAIL_ENCRYPTION_ENABLED
+    Type: AWS::Config::ConfigRule
+  CloudTrailLogFileValidationEnabled:
+    Properties:
+      ConfigRuleName: cloud-trail-log-file-validation-enabled
+      Source:
+        Owner: AWS
+        SourceIdentifier: CLOUD_TRAIL_LOG_FILE_VALIDATION_ENABLED
+    Type: AWS::Config::ConfigRule
+  CloudtrailS3DataeventsEnabled:
+    Properties:
+      ConfigRuleName: cloudtrail-s3-dataevents-enabled
+      Source:
+        Owner: AWS
+        SourceIdentifier: CLOUDTRAIL_S3_DATAEVENTS_ENABLED
+    Type: AWS::Config::ConfigRule
+  CloudtrailSecurityTrailEnabled:
+    Properties:
+      ConfigRuleName: cloudtrail-security-trail-enabled
+      Source:
+        Owner: AWS
+        SourceIdentifier: CLOUDTRAIL_SECURITY_TRAIL_ENABLED
+    Type: AWS::Config::ConfigRule
+  CloudwatchLogGroupEncrypted:
+    Properties:
+      ConfigRuleName: cloudwatch-log-group-encrypted
+      Source:
+        Owner: AWS
+        SourceIdentifier: CLOUDWATCH_LOG_GROUP_ENCRYPTED
+    Type: AWS::Config::ConfigRule
+  IamGroupHasUsersCheck:
+    Properties:
+      ConfigRuleName: iam-group-has-users-check
+      Scope:
+        ComplianceResourceTypes:
+        - AWS::IAM::Group
+      Source:
+        Owner: AWS
+        SourceIdentifier: IAM_GROUP_HAS_USERS_CHECK
+    Type: AWS::Config::ConfigRule
+  IamPasswordPolicy:
+    Properties:
+      ConfigRuleName: iam-password-policy
+      InputParameters:
+        MaxPasswordAge:
+          Fn::If:
+          - iamPasswordPolicyParamMaxPasswordAge
+          - Ref: IamPasswordPolicyParamMaxPasswordAge
+          - Ref: AWS::NoValue
+        MinimumPasswordLength:
+          Fn::If:
+          - iamPasswordPolicyParamMinimumPasswordLength
+          - Ref: IamPasswordPolicyParamMinimumPasswordLength
+          - Ref: AWS::NoValue
+        PasswordReusePrevention:
+          Fn::If:
+          - iamPasswordPolicyParamPasswordReusePrevention
+          - Ref: IamPasswordPolicyParamPasswordReusePrevention
+          - Ref: AWS::NoValue
+        RequireLowercaseCharacters:
+          Fn::If:
+          - iamPasswordPolicyParamRequireLowercaseCharacters
+          - Ref: IamPasswordPolicyParamRequireLowercaseCharacters
+          - Ref: AWS::NoValue
+        RequireNumbers:
+          Fn::If:
+          - iamPasswordPolicyParamRequireNumbers
+          - Ref: IamPasswordPolicyParamRequireNumbers
+          - Ref: AWS::NoValue
+        RequireSymbols:
+          Fn::If:
+          - iamPasswordPolicyParamRequireSymbols
+          - Ref: IamPasswordPolicyParamRequireSymbols
+          - Ref: AWS::NoValue
+        RequireUppercaseCharacters:
+          Fn::If:
+          - iamPasswordPolicyParamRequireUppercaseCharacters
+          - Ref: IamPasswordPolicyParamRequireUppercaseCharacters
+          - Ref: AWS::NoValue
+      Source:
+        Owner: AWS
+        SourceIdentifier: IAM_PASSWORD_POLICY
+    Type: AWS::Config::ConfigRule
+  IamPolicyNoStatementsWithFullAccess:
+    Properties:
+      ConfigRuleName: iam-policy-no-statements-with-full-access
+      Scope:
+        ComplianceResourceTypes:
+        - AWS::IAM::Policy
+      Source:
+        Owner: AWS
+        SourceIdentifier: IAM_POLICY_NO_STATEMENTS_WITH_FULL_ACCESS
+    Type: AWS::Config::ConfigRule
+  IamRootAccessKeyCheck:
+    Properties:
+      ConfigRuleName: iam-root-access-key-check
+      Source:
+        Owner: AWS
+        SourceIdentifier: IAM_ROOT_ACCESS_KEY_CHECK
+    Type: AWS::Config::ConfigRule
+  IamUserGroupMembershipCheck:
+    Properties:
+      ConfigRuleName: iam-user-group-membership-check
+      Scope:
+        ComplianceResourceTypes:
+        - AWS::IAM::User
+      Source:
+        Owner: AWS
+        SourceIdentifier: IAM_USER_GROUP_MEMBERSHIP_CHECK
+    Type: AWS::Config::ConfigRule
+  IamUserMfaEnabled:
+    Properties:
+      ConfigRuleName: iam-user-mfa-enabled
+      Source:
+        Owner: AWS
+        SourceIdentifier: IAM_USER_MFA_ENABLED
+    Type: AWS::Config::ConfigRule
+  IamUserNoPoliciesCheck:
+    Properties:
+      ConfigRuleName: iam-user-no-policies-check
+      Scope:
+        ComplianceResourceTypes:
+        - AWS::IAM::User
+      Source:
+        Owner: AWS
+        SourceIdentifier: IAM_USER_NO_POLICIES_CHECK
+    Type: AWS::Config::ConfigRule
+  IamUserUnusedCredentialsCheck:
+    Properties:
+      ConfigRuleName: iam-user-unused-credentials-check
+      InputParameters:
+        maxCredentialUsageAge:
+          Fn::If:
+          - iamUserUnusedCredentialsCheckParamMaxCredentialUsageAge
+          - Ref: IamUserUnusedCredentialsCheckParamMaxCredentialUsageAge
+          - Ref: AWS::NoValue
+      Source:
+        Owner: AWS
+        SourceIdentifier: IAM_USER_UNUSED_CREDENTIALS_CHECK
+    Type: AWS::Config::ConfigRule
+  MfaEnabledForIamConsoleAccess:
+    Properties:
+      ConfigRuleName: mfa-enabled-for-iam-console-access
+      Source:
+        Owner: AWS
+        SourceIdentifier: MFA_ENABLED_FOR_IAM_CONSOLE_ACCESS
+    Type: AWS::Config::ConfigRule
+  MultiRegionCloudTrailEnabled:
+    Properties:
+      ConfigRuleName: multi-region-cloudtrail-enabled
+      Source:
+        Owner: AWS
+        SourceIdentifier: MULTI_REGION_CLOUD_TRAIL_ENABLED
+    Type: AWS::Config::ConfigRule
+  RootAccountHardwareMfaEnabled:
+    Properties:
+      ConfigRuleName: root-account-hardware-mfa-enabled
+      Source:
+        Owner: AWS
+        SourceIdentifier: ROOT_ACCOUNT_HARDWARE_MFA_ENABLED
+    Type: AWS::Config::ConfigRule
+  RootAccountMfaEnabled:
+    Properties:
+      ConfigRuleName: root-account-mfa-enabled
+      Source:
+        Owner: AWS
+        SourceIdentifier: ROOT_ACCOUNT_MFA_ENABLED
+    Type: AWS::Config::ConfigRule
+  WafRegionalRuleNotEmpty:
+    Properties:
+      ConfigRuleName: waf-regional-rule-not-empty
+      Scope:
+        ComplianceResourceTypes:
+        - AWS::WAFRegional::Rule
+      Source:
+        Owner: AWS
+        SourceIdentifier: WAF_REGIONAL_RULE_NOT_EMPTY
+    Type: AWS::Config::ConfigRule
+  WafRegionalRulegroupNotEmpty:
+    Properties:
+      ConfigRuleName: waf-regional-rulegroup-not-empty
+      Scope:
+        ComplianceResourceTypes:
+        - AWS::WAFRegional::RuleGroup
+      Source:
+        Owner: AWS
+        SourceIdentifier: WAF_REGIONAL_RULEGROUP_NOT_EMPTY
+    Type: AWS::Config::ConfigRule
+  WafRegionalWebaclNotEmpty:
+    Properties:
+      ConfigRuleName: waf-regional-webacl-not-empty
+      Scope:
+        ComplianceResourceTypes:
+        - AWS::WAFRegional::WebACL
+      Source:
+        Owner: AWS
+        SourceIdentifier: WAF_REGIONAL_WEBACL_NOT_EMPTY
+    Type: AWS::Config::ConfigRule
+  Wafv2LoggingEnabled:
+    Properties:
+      ConfigRuleName: wafv2-logging-enabled
+      Source:
+        Owner: AWS
+        SourceIdentifier: WAFV2_LOGGING_ENABLED
+    Type: AWS::Config::ConfigRule
+Conditions:
+  accessKeysRotatedParamMaxAccessKeyAge:
+    Fn::Not:
+    - Fn::Equals:
+      - ''
+      - Ref: AccessKeysRotatedParamMaxAccessKeyAge
+    backupPlanMinFrequencyAndMinRetentionCheckParamRequiredFrequencyUnit:
+    Fn::Not:
+    - Fn::Equals:
+      - ''
+      - Ref: BackupPlanMinFrequencyAndMinRetentionCheckParamRequiredFrequencyUnit
+  backupPlanMinFrequencyAndMinRetentionCheckParamRequiredFrequencyValue:
+    Fn::Not:
+    - Fn::Equals:
+      - ''
+      - Ref: BackupPlanMinFrequencyAndMinRetentionCheckParamRequiredFrequencyValue
+  backupPlanMinFrequencyAndMinRetentionCheckParamRequiredRetentionDays:
+    Fn::Not:
+    - Fn::Equals:
+      - ''
+      - Ref: BackupPlanMinFrequencyAndMinRetentionCheckParamRequiredRetentionDays
+  backupRecoveryPointMinimumRetentionCheckParamRequiredRetentionDays:
+    Fn::Not:
+    - Fn::Equals:
+      - ''
+      - Ref: BackupRecoveryPointMinimumRetentionCheckParamRequiredRetentionDays
+  iamPasswordPolicyParamMaxPasswordAge:
+    Fn::Not:
+    - Fn::Equals:
+      - ''
+      - Ref: IamPasswordPolicyParamMaxPasswordAge
+  iamPasswordPolicyParamMinimumPasswordLength:
+    Fn::Not:
+    - Fn::Equals:
+      - ''
+      - Ref: IamPasswordPolicyParamMinimumPasswordLength
+  iamPasswordPolicyParamPasswordReusePrevention:
+    Fn::Not:
+    - Fn::Equals:
+      - ''
+      - Ref: IamPasswordPolicyParamPasswordReusePrevention
+  iamPasswordPolicyParamRequireLowercaseCharacters:
+    Fn::Not:
+    - Fn::Equals:
+      - ''
+      - Ref: IamPasswordPolicyParamRequireLowercaseCharacters
+  iamPasswordPolicyParamRequireNumbers:
+    Fn::Not:
+    - Fn::Equals:
+      - ''
+      - Ref: IamPasswordPolicyParamRequireNumbers
+  iamPasswordPolicyParamRequireSymbols:
+    Fn::Not:
+    - Fn::Equals:
+      - ''
+      - Ref: IamPasswordPolicyParamRequireSymbols
+  iamPasswordPolicyParamRequireUppercaseCharacters:
+    Fn::Not:
+    - Fn::Equals:
+      - ''
+      - Ref: IamPasswordPolicyParamRequireUppercaseCharacters
+  iamUserUnusedCredentialsCheckParamMaxCredentialUsageAge:
+    Fn::Not:
+    - Fn::Equals:
+      - ''
+      - Ref: IamUserUnusedCredentialsCheckParamMaxCredentialUsageAge
