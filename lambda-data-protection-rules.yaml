@@ -51,26 +51,26 @@ Resources:
         Owner: AWS
         SourceIdentifier: LAMBDA_FUNCTION_SETTINGS_CHECK
     Type: AWS::Config::ConfigRule
-  # LambdaInsideVpc:
-  #   Properties:
-  #     ConfigRuleName: lambda-inside-vpc
-  #     Scope:
-  #       ComplianceResourceTypes:
-  #       - AWS::Lambda::Function
-  #     Source:
-  #       Owner: AWS
-  #       SourceIdentifier: LAMBDA_INSIDE_VPC
-  #   Type: AWS::Config::ConfigRule
-  # LambdaVpcMultiAzCheck:
-  #   Properties:
-  #     ConfigRuleName: lambda-vpc-multi-az-check
-  #     Scope:
-  #       ComplianceResourceTypes:
-  #       - AWS::Lambda::Function
-  #     Source:
-  #       Owner: AWS
-  #       SourceIdentifier: LAMBDA_VPC_MULTI_AZ_CHECK
-  #   Type: AWS::Config::ConfigRule
+  LambdaInsideVpc:
+    Properties:
+      ConfigRuleName: lambda-inside-vpc
+      Scope:
+        ComplianceResourceTypes:
+        - AWS::Lambda::Function
+      Source:
+        Owner: AWS
+        SourceIdentifier: LAMBDA_INSIDE_VPC
+    Type: AWS::Config::ConfigRule
+  LambdaVpcMultiAzCheck:
+    Properties:
+      ConfigRuleName: lambda-vpc-multi-az-check
+      Scope:
+        ComplianceResourceTypes:
+        - AWS::Lambda::Function
+      Source:
+        Owner: AWS
+        SourceIdentifier: LAMBDA_VPC_MULTI_AZ_CHECK
+    Type: AWS::Config::ConfigRule
 Conditions:
   lambdaFunctionSettingsCheckParamRuntime:
     Fn::Not:
