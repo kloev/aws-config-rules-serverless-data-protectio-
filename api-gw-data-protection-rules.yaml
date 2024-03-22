@@ -79,32 +79,6 @@ Resources:
         Owner: AWS
         SourceIdentifier: API_GW_SSL_ENABLED
     Type: AWS::Config::ConfigRule
-
-  #TO-DO: Überprüfen
-  # ApiGwXrayEnabled:
-  #   Properties:
-  #     ConfigRuleName: api-gw-xray-enabled
-  #     Scope:
-  #       ComplianceResourceTypes:
-  #       - AWS::ApiGateway::Stage
-  #     Source:
-  #       Owner: AWS
-  #       SourceIdentifier: API_GW_XRAY_ENABLED
-  #   Type: AWS::Config::ConfigRule
-  # CloudTrailCloudWatchLogsEnabled:
-  #   Properties:
-  #     ConfigRuleName: cloud-trail-cloud-watch-logs-enabled
-  #     Source:
-  #       Owner: AWS
-  #       SourceIdentifier: CLOUD_TRAIL_CLOUD_WATCH_LOGS_ENABLED
-  #   Type: AWS::Config::ConfigRule
-  # CloudTrailEnabled:
-  #   Properties:
-  #     ConfigRuleName: cloudtrail-enabled
-  #     Source:
-  #       Owner: AWS
-  #       SourceIdentifier: CLOUD_TRAIL_ENABLED
-  #   Type: AWS::Config::ConfigRule
 Conditions:
 #API
   apiGwEndpointTypeCheckParamEndpointConfigurationTypes:
